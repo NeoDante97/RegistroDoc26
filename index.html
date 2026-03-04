@@ -1,0 +1,397 @@
+}<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Personal Educativo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            justify-content: center;
+            /* Se cambia a flex-start para evitar que se corte arriba en móviles */
+            align-items: flex-start; 
+            min-height: 100vh;
+            margin: 0;
+            padding: 30px 15px; /* Espacio extra a los bordes */
+            box-sizing: border-box;
+            color: #333;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(255, 255, 255, 0.1) inset;
+            width: 100%;
+            max-width: 480px;
+            backdrop-filter: blur(10px);
+            animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+            box-sizing: border-box;
+            /* Margin auto permite centrar en laptop sin cortar en celular */
+            margin: auto; 
+        }
+
+        h2 {
+            text-align: center;
+            color: #1a202c;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            animation: fadeIn 0.5s ease-out both;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+        .form-group:nth-child(6) { animation-delay: 0.6s; }
+        .form-group:nth-child(7) { animation-delay: 0.7s; } 
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .form-group:focus-within label {
+            color: #2a5298;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 15px;
+            font-family: inherit;
+            background-color: #f8fafc;
+            color: #2d3748;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        input:focus, select:focus {
+            border-color: #2a5298;
+            background-color: #fff;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.15);
+            transform: translateY(-2px);
+        }
+
+        input:hover, select:hover {
+            border-color: #cbd5e1;
+        }
+
+        button.btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.35);
+            animation: fadeIn 0.5s ease-out 0.8s both; 
+        }
+
+        button.btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(42, 82, 152, 0.45);
+        }
+
+        button.btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Estilos para las ventanas emergentes (Modales) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalScaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            max-width: 90%;
+            width: 400px;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+        }
+
+        .estado-texto {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 10px 0;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        .btn-whatsapp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #25D366;
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 25px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-whatsapp::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #1ebe57;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-whatsapp:hover::after {
+            left: 100%;
+            transition: all 0.5s ease-in-out;
+        }
+
+        .btn-cerrar {
+            background: transparent;
+            color: #a0aec0;
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .btn-cerrar:hover {
+            color: #4a5568;
+            text-decoration: underline;
+        }
+
+        /* --------------------------------------------------- */
+        /* RESPONSIVIDAD: Ajustes específicos para celulares   */
+        /* --------------------------------------------------- */
+        @media (max-width: 500px) {
+            body {
+                padding: 15px; /* Menos espacio en los bordes para celulares */
+            }
+            .form-container {
+                padding: 25px 20px; /* Reducimos el padding interno del cuadro */
+            }
+            h2 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+            .form-group {
+                margin-bottom: 15px; /* Reducimos el espacio entre campos */
+            }
+            input, select {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            button.btn-submit {
+                padding: 12px;
+                font-size: 15px;
+            }
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes modalScaleIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="form-container">
+        <h2>Registro de Docentes 2026 I.E "La Victoria"</h2>
+        <form id="registroForm" name="registroForm">
+            <div class="form-group">
+                <label for="dni">DNI</label>
+                <input type="text" id="dni" name="dni" required maxlength="8" pattern="\d{8}" title="Debe contener 8 dígitos">
+            </div>
+            <div class="form-group">
+                <label for="nombres">Nombres y Apellidos</label>
+                <input type="text" id="nombres" name="nombres" required>
+            </div>
+            <div class="form-group">
+                <label for="fecha">Fecha de Nacimiento</label>
+                <input type="date" id="fecha" name="fecha" required>
+            </div>
+            <div class="form-group">
+                <label for="correo">Correo Electrónico</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+            <div class="form-group">
+                <label for="celular">Celular</label>
+                <input type="tel" id="celular" name="celular" required maxlength="9" pattern="\d{9}" title="Debe contener 9 dígitos">
+            </div>
+            <div class="form-group">
+                <label for="tipo">Condición Laboral</label>
+                <select id="tipo" name="tipo" required>
+                    <option value="" disabled selected>Seleccione una opción...</option>
+                    <option value="CONTRATADO">Contratado</option>
+                    <option value="NOMBRADO">Nombrado</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="area">Área</label>
+                <input type="text" id="area" name="area" required placeholder="Ingrese el área">
+            </div>
+
+            <button type="submit" class="btn-submit">Guardar Datos</button>
+        </form>
+    </div>
+
+    <div class="modal-overlay" id="modalCarga">
+        <div class="modal-content">
+            <div id="textoCarga" class="estado-texto">⏳ Registrando...</div>
+            <div id="textoExito" class="estado-texto" style="display: none; color: #27ae60;">✅ Registrado</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalWhatsapp">
+        <div class="modal-content">
+            <h3 style="margin-top: 0; color: #2c3e50;">¡Registro Exitoso!</h3>
+            <p style="color: #555; font-size: 15px;">GRUPO DE WhatsApp 2026 LA VICTORIA</p>
+            <p style="color: #555; font-size: 14px; margin-bottom: 20px;">Haz clic en el enlace para unirte:</p>
+
+            <a href="https://chat.whatsapp.com/LUkU40MEwed6zT1Te96EwW?mode=gi_t" target="_blank" class="btn-whatsapp">
+                Unirme al Grupo
+            </a>
+            <br>
+            <button class="btn-cerrar" onclick="cerrarWhatsapp()">Cerrar esta ventana</button>
+        </div>
+    </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxzhwGO3Hn5Dg0YLkk4H2LCIiUBLCkjxnMam51SAhYkH22gdU_OZzgVVqiAxFm7Xxxt/exec';
+        const form = document.forms['registroForm'];
+
+        const modalCarga = document.getElementById('modalCarga');
+        const textoCarga = document.getElementById('textoCarga');
+        const textoExito = document.getElementById('textoExito');
+        const modalWhatsapp = document.getElementById('modalWhatsapp');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            modalCarga.style.display = 'flex';
+            textoCarga.style.display = 'block';
+            textoExito.style.display = 'none';
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                .then(response => {
+                    textoCarga.style.display = 'none';
+                    textoExito.style.display = 'block';
+                    form.reset();
+
+                    setTimeout(function () {
+                        modalCarga.style.display = 'none';
+                        modalWhatsapp.style.display = 'flex';
+                    }, 1500);
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    modalCarga.style.display = 'none';
+                    alert('Hubo un problema al enviar los datos. Revisa tu conexión a internet.');
+                });
+        });
+
+        function cerrarWhatsapp() {
+            modalWhatsapp.style.display = 'none';
+        }
+    </script>
+
+</body>
+
+</html>
